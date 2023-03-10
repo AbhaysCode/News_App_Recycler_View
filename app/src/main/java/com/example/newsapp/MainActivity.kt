@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,22 +25,30 @@ class MainActivity : AppCompatActivity() {
             "Coronavirus India Updates: India locks down for 21 days but no need to panic"
 
         )
-        val newsLink = arrayOf(
-            "https://english.newsnationtv.com/sports/cricket/cool-captain-ms-dhoni-retires-from-international-cricket-will-continue-in-ipl-258911.html",
-            "https://www.wplt20.com/news/match-report-match-1-gg-vs-mi-wpl-2023",
-            "https://www.postoast.com/subrahmanyam-jaishankar/",
-            "https://www.hindustantimes.com/india-news/news-updates-from-ht-india-may-lead-the-world-by-2030-says-ex-us-envoy-101627975096338.html",
-            "https://timesofindia.indiatimes.com/sports/cricket/wpl/gujarat-giants-vs-mumbai-indians-live-score-wpl-updates-womens-premier-league/liveblog/98413201.cms"
-
+        val newsContent = arrayOf(
+            getString(R.string.news_content),getString(R.string.news_content),
+            getString(R.string.news_content),getString(R.string.news_content),
+            getString(R.string.news_content)
         )
         val newsList = arrayListOf<News>()
         for (index in newsImg.indices){
-            val newsElem = News(newsImg[index],newsHeadline[index],newsLink[index])
+            val newsElem = News(newsImg[index],newsHeadline[index],newsContent[index])
             newsList.add(newsElem)
         }
 //        Setting Up the Recycler View Adapter
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = NewsAdapter(this,newsList)
+        val newsAdapter = NewsAdapter(this,newsList)
+        recyclerView.adapter = newsAdapter
+        newsAdapter.setItemClickListener(object:NewsAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                val intent = Intent(this@MainActivity,NewsDetailActivity::class.java)
+                intent.putExtra("newsImg",newsList[position].img)
+                intent.putExtra("newsHeadLine",newsList[position].newsHeadLine)
+                intent.putExtra("newsContent",newsList[position].newsContent)
+                startActivity(intent)
+            }
+
+        })
     }
 }
